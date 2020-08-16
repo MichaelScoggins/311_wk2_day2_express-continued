@@ -1,32 +1,50 @@
-let products = require('./../data/products')
+const products = require("../data/products")
+
 let counter = products.length + 1
 
-//list
-const listProducts = (req, res) => res.json(products)
-//show
+// list
+const listProducts = (req, res) =>
+  res.json(products.filter((i) => i.isActive !== false))
+// show
 const showProduct = (req, res) => {
-  const user = products.find(i => i_id == req.params.userId)
+  const user = products.find((i) => i._id == req.params.userId)
   console.log(user)
-  res.json(user)
+  if (user.isActive === false) {
+    res
+      .status(400)
+      .json({ message: `No product with the id of ${req.params.userId}` })
+  } else {
+    res.json(user)
+  }
 }
-//create
+// create
 const createProduct = (req, res) => {
-  products.push({_id: counter++, ...req.body})
-  res.json(products[products.length-1])
+  products.push({ _id: counter++, ...req.body })
+  res.json(products[products.length - 1])
 }
-//update
+// update
 const updateProduct = (req, res) => {
-  let user = (products.find(user => user._id === parseInt(req.params.userId)))
-  user.name = req.body.name ? req.body.name : user.name
-  user.avatar = req.body.avatar ? req.body.avatar : user.avatar
-  user.occupation = req.body.occupation ? req.body.occupation : user.occupation
-  res.json(user)
+  const user = products.find((i) => i._id === parseInt(req.params.userId))
+  if (user.isActive === false) {
+    res
+      .status(400)
+      .json({ message: `No product with the id of ${req.params.userId}` })
+  } else {
+    user.name = req.body.name ? req.body.name : user.name
+    user.avatar = req.body.avatar ? req.body.avatar : user.avatar
+    user.occupation = req.body.occupation
+      ? req.body.occupation
+      : user.occupation
+    res.json(user)
+  }
 }
-//delete
+// delete
 const deleteProduct = (req, res) => {
-  let user = (products.find(user => user._id === parseInt(req.params.userId)))
+  const user = products.find((i) => i._id === parseInt(req.params.userId))
   user.isActive = false
-  res.status(400).json({message:`No member with the id of ${req.params.userId}`})
+  res
+    .status(400)
+    .json({ message: `No product with the id of ${req.params.userId}` })
 }
 
 module.exports = {
@@ -34,5 +52,5 @@ module.exports = {
   showProduct,
   createProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
 }
