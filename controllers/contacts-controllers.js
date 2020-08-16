@@ -5,7 +5,7 @@ let counter = contacts.length + 1
 const listContact = (req, res) => res.json(contacts)
 //show
 const showContact = (req, res) => {
-  const user = contacts.find(i => i_id == req.params.userId)
+  const user = contacts.find(i => i.i_id == req.params.userId)
   console.log(user)
   res.json(user)
 }
